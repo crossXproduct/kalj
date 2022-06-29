@@ -127,7 +127,7 @@ final_rho = 1.2 #same as Flenner & Co
 print("rho_f=",final_rho)
 final_box.volume = sim.state.N_particles / final_rho
 print("V_f=",final_box.volume**(1.0/3.0)) #Kob & Andersen's is 9.4 in units of sigma_AA
-t_r = int(10e4*final_rho/initial_rho)
+t_r = int(10e5*final_rho/initial_rho)
 ramp.t_ramp = t_r
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
 sim.operations.computes.append(thermodynamic_properties)
