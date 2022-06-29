@@ -17,7 +17,7 @@ random_seed = int(random.randrange(0,65535))
 TIME_FACTOR = 100
 
 ###SYSTEM SETUP
-spacing = 1.3
+spacing = 2.0
 K = math.ceil(N_particles**(1 / 3))
 L = K * spacing
 x = numpy.linspace(-L / 2, L / 2, K, endpoint=False)
@@ -192,7 +192,7 @@ sim.operations.integrator = integrator
 
 ## Setup writer
 #traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(t_write), unwrap_full=True)
-traj_writer = hoomd.write.GSD(filename='trajectory.gsd', trigger=hoomd.trigger.Periodic(t_write))
+traj_writer = hoomd.write.GSD(filename='trajectory.gsd', trigger=hoomd.trigger.Periodic(TIME_FACTOR*t_write))
 sim.operations.writers.append(traj_writer)
 
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
