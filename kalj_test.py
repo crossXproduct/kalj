@@ -40,7 +40,7 @@ sim = hoomd.Simulation(device=cpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
 
 ## Setup LJ Integrator
-integrator = hoomd.md.Integrator(dt=0.005)
+integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=0.1)
 lj = hoomd.md.pair.LJ(nlist=cell)
 #   Define pair potential
@@ -93,7 +93,7 @@ sim = hoomd.Simulation(device=cpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
 
 ## Setup LJ Integrator
-integrator = hoomd.md.Integrator(dt=0.005)
+integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=r_buf)
 lj = hoomd.md.pair.LJ(nlist=cell)
 #   Define pair potential
@@ -136,7 +136,7 @@ box_resize = hoomd.update.BoxResize(box1=initial_box, box2=final_box, variant=ra
 sim.operations.updaters.append(box_resize)
 
 ## Run compressor
-sim.run(TIME_FACTOR*t_r)
+sim.run(t_r)
 print("COMPRESSED")
 print("Compression successful?",sim.state.box == final_box) #check compression success
 print(initial_box)
