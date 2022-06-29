@@ -45,7 +45,7 @@ sim = hoomd.Simulation(device=cpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
 
 ## Setup LJ Integrator
-integrator = hoomd.md.Integrator(dt=0.005)
+integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=0.1)
 lj = hoomd.md.pair.LJ(nlist=cell)
 #   Define pair potential
@@ -66,7 +66,7 @@ r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
 cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 snapshot = sim.state.get_snapshot()
@@ -99,7 +99,7 @@ sim = hoomd.Simulation(device=cpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
 
 ## Setup LJ Integrator
-integrator = hoomd.md.Integrator(dt=0.005)
+integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=r_buf)
 lj = hoomd.md.pair.LJ(nlist=cell)
 #   Define pair potential
@@ -117,7 +117,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
@@ -143,7 +143,7 @@ box_resize = hoomd.update.BoxResize(box1=initial_box, box2=final_box, variant=ra
 sim.operations.updaters.append(box_resize)
 
 ## Run compressor
-sim.run(TIME_FACTOR*t_r)
+sim.run(t_r)
 if cpu.communicator.rank == 0:
     print("COMPRESSED")
     print("Compression successful?",sim.state.box == final_box) #check compression success
@@ -196,7 +196,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
