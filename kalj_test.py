@@ -17,7 +17,7 @@ random_seed = int(random.randrange(0,65535))
 TIME_FACTOR = 100
 
 ###SYSTEM SETUP
-spacing = 2.0
+spacing = 1.3
 K = math.ceil(N_particles**(1 / 3))
 L = K * spacing
 x = numpy.linspace(-L / 2, L / 2, K, endpoint=False)
@@ -61,7 +61,7 @@ r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
 cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 snapshot = sim.state.get_snapshot()
@@ -111,7 +111,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
@@ -127,7 +127,7 @@ final_rho = 1.2 #same as Flenner & Co
 print("rho_f=",final_rho)
 final_box.volume = sim.state.N_particles / final_rho
 print("V_f=",final_box.volume**(1.0/3.0)) #Kob & Andersen's is 9.4 in units of sigma_AA
-t_r = int(10e5*final_rho/initial_rho)
+t_r = int(10e4*final_rho/initial_rho)
 ramp.t_ramp = t_r
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
 sim.operations.computes.append(thermodynamic_properties)
@@ -186,7 +186,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
