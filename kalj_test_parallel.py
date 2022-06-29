@@ -31,12 +31,12 @@ def init():
     snapshot.particles.typeid = [0] * math.floor(0.8*N_particles) + [1] * math.floor(0.2*N_particles) #particle 'B' is 20%
     snapshot.configuration.box = [L, L, L, 0, 0, 0]
     snapshot.particles.types = ['A','B']
+    with gsd.hoomd.open(name='lattice.gsd', mode='xb') as f:
+        f.append(snapshot)
 
 cpu = hoomd.device.CPU()
 if cpu.communicator.rank == 0:
     init()
-    with gsd.hoomd.open(name='lattice.gsd', mode='xb') as f:
-        f.append(snapshot)
 
 ###RANDOMIZE
 ## Initialize state
