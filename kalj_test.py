@@ -14,6 +14,7 @@ t_run = int(sys.argv[5])
 t_write = int(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 #final_rho = float(sys.argv[3])
 random_seed = int(random.randrange(0,65535))
+TIME_FACTOR = 100
 
 ###SYSTEM SETUP
 spacing = 1.3
@@ -60,7 +61,7 @@ r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
 cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 snapshot = sim.state.get_snapshot()
@@ -80,7 +81,7 @@ print("kT=",thermodynamic_properties.kinetic_temperature)
 print("V=",thermodynamic_properties.volume**(1.0/3.0))
 
 ## Randomize positions
-sim.run(10000)
+sim.run(TIME_FACTOR*1000)
 
 ## Write randomized state to file
 hoomd.write.GSD.write(state=sim.state, filename='random.gsd', mode='xb')
@@ -110,7 +111,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
@@ -135,7 +136,7 @@ box_resize = hoomd.update.BoxResize(box1=initial_box, box2=final_box, variant=ra
 sim.operations.updaters.append(box_resize)
 
 ## Run compressor
-sim.run(t_r)
+sim.run(TIME_FACTOR*t_r)
 print("COMPRESSED")
 print("Compression successful?",sim.state.box == final_box) #check compression success
 print(initial_box)
@@ -150,7 +151,7 @@ print("V_therm=",thermodynamic_properties.volume**(1.0/3.0))
 print("V_box=",sim.state.box.volume**(1.0/3.0))
 
 ###EQUILIBRATION
-sim.run(t_eq)
+sim.run(TIME_FACTOR*t_eq)
 hoomd.write.GSD.write(state=sim.state, filename='equilibrated.gsd', mode='xb')
 #   Prints
 print("EQUILIBRATED")
@@ -185,7 +186,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=TIME_FACTOR*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
@@ -198,7 +199,7 @@ thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd
 sim.operations.computes.append(thermodynamic_properties)
 
 ## Run
-sim.run(t_run)
+sim.run(TIME_FACTOR*t_run)
 print("DONE")
 print(sim.state.get_snapshot().particles.velocity[0:5])
 print("DOF=",thermodynamic_properties.degrees_of_freedom)
