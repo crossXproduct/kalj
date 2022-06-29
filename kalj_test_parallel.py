@@ -29,13 +29,14 @@ snapshot.particles.typeid = [0] * math.floor(0.8*N_particles) + [1] * math.floor
 snapshot.configuration.box = [L, L, L, 0, 0, 0]
 snapshot.particles.types = ['A','B']
 
+cpu = hoomd.device.CPU()
 if cpu.communicator.rank == 0:
     with gsd.hoomd.open(name='lattice.gsd', mode='xb') as f:
         f.append(snapshot)
 
 ###RANDOMIZE
 ## Initialize state
-cpu = hoomd.device.CPU()
+#cpu = hoomd.device.CPU()
 sim = hoomd.Simulation(device=cpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
 
