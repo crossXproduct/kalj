@@ -13,6 +13,15 @@ t_eq = int(sys.argv[4])
 t_run = int(sys.argv[5])
 t_write = int(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 #final_rho = float(sys.argv[3])
+
+cpu = hoomd.device.CPU()
+if cpu.communicator.rank == 0:
+    print(N_particles)
+    print(temp)
+    print(delta_t)
+    print(t_run)
+    print(t_write)
+
 random_seed = int(random.randrange(0,65535))
 
 ###SYSTEM SETUP
@@ -29,7 +38,6 @@ snapshot.particles.typeid = [0] * math.floor(0.8*N_particles) + [1] * math.floor
 snapshot.configuration.box = [L, L, L, 0, 0, 0]
 snapshot.particles.types = ['A','B']
 
-cpu = hoomd.device.CPU()
 if cpu.communicator.rank == 0:
     with gsd.hoomd.open(name='lattice.gsd', mode='xb') as f:
         f.append(snapshot)

@@ -13,6 +13,12 @@ t_eq = int(sys.argv[4])
 t_run = int(sys.argv[5])
 t_write = int(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 #final_rho = float(sys.argv[3])
+print(N_particles)
+print(temp)
+print(delta_t)
+print(t_run)
+print(t_write)
+
 random_seed = int(random.randrange(0,65535))
 
 ###SYSTEM SETUP
