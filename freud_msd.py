@@ -6,6 +6,8 @@ import sys
 import matplotlib.pyplot as plt
 
 path = str(sys.argv[1])
+t_write = int(sys.argv[2])
+dt = float(sys.argv[3])
 traj = gsd.hoomd.open(path,'rb')
 
 print('frames: ',len(traj))
@@ -33,12 +35,12 @@ traj.close()
 
 msdfile = open('msd.dat','w')
 for i in range(0,len(msd.msd)):
-    msdfile.write("%4d,%7.5f\n"%(i*10,msd.msd[i]))
-plt.plot(range(0,len(msd.msd)*10,10),msd.msd)
+    msdfile.write("%4d,%7.5f\n"%(i*t_write*dt,msd.msd[i]))
+plt.plot(range(0,len(msd.msd)*i*dt,dt),msd.msd)
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('frames')
-#plt.xlim([0.1,10e2])
-plt.ylim(0.1,10)
+plt.xlim(left=0.1)
+plt.ylim(bottom=1)
 plt.ylabel('msd')
 plt.savefig('msd.png')
