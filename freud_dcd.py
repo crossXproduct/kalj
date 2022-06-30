@@ -6,8 +6,15 @@ import matplotlib.pyplot as plt
 
 t_write = int(sys.argv[1])
 dt = float(sys.argv[2])
-files = list(sys.argv[3])
+path = str(sys.argv[3])
+startfile = int(sys.argv[4])
+endfile = int(sys.argv[4])
+
 msdfile = open('msd.dat','a')
+
+files = list()
+for file in range(startfile,endfile,1):
+    files.append(path + "/traj" + str(startfile) + ".dcd")
 
 for file in files:
     traj = gsd.hoomd.open(file,'rb')
