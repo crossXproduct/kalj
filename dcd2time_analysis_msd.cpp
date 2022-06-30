@@ -131,17 +131,17 @@ int main() {
 
 // ========================================================================== //
 //      Recast in units of dtsave (time between snapshots)
-    if(t0_choice == false) t0_dif = dtsave;
-    else if(t0_dif < dtsave){
-        cout << "ERROR: initial time difference " << t0_dif << " too small. Must be at least " << dtsave << endl;
+    if(t0_choice == false) t0_dif = dtsave*delta_t;
+    else if(t0_dif < dtsave*delta_t){
+        cout << "ERROR: initial time difference " << t0_dif << " too small. Must be at least " << dtsave*delta_t << endl;
         exit(0);
     }
-    int t0_snapshot_sm = t0_sm / dtsave;
-    int dt_snapshot_sm = tint_sm / dtsave;
-    int dt_snapshot_lg = tint_lg / dtsave;
+    int t0_snapshot_sm = t0_sm / dtsave / delta_t;
+    int dt_snapshot_sm = tint_sm / dtsave / delta_t;
+    int dt_snapshot_lg = tint_lg / dtsave / delta_t;
     cout << "dt_snapshot_lg = " << dt_snapshot_lg << endl;
     if(dt_snapshot_lg > dcdtimes) dt_snapshot_lg = dcdtimes;
-    int t0_snapshot_dif = t0_dif / dtsave;
+    int t0_snapshot_dif = t0_dif / dtsave / delta_t;
     //remainder of code is written in terms of snapshots
 
 // ========================================================================== //
@@ -327,7 +327,7 @@ int main() {
 //      Misc
 
     //save analysis params to file
-    printParams(path, nfiles, t0_snapshot_sm*dtsave, dt_snapshot_sm*dtsave, dt_snapshot_lg*dtsave, dtsave, ntints, t0_choice, t0_snapshot_dif*dtsave, q, a, qmax);
+    printParams(path, nfiles, t0_snapshot_sm*dtsave*delta_t, dt_snapshot_sm*dtsave*delta_t, dt_snapshot_lg*dtsave*delta_t, dtsave*delta_t, ntints, t0_choice, t0_snapshot_dif*dtsave*delta_t, q, a, qmax);
     //set up logistical parameters for main loops
     cout << "Reading data & evaluating functions..." << endl;
     int flag = 0; //dcd parameters found in Flenner's code (not used here)
@@ -344,7 +344,7 @@ int main() {
     //Loop over snapshot differences
     for(int cindex = 0; cindex < ntints; cindex++) {
         nt0s.at(cindex) = 0;
-        cout << "Time interval " << cindex + 1 << " of " << ntints << " : " << dt_snapshots.at(cindex)*dtsave << endl;
+        cout << "Time interval " << cindex + 1 << " of " << ntints << " : " << dt_snapshots.at(cindex)*dtsave*delta_t << endl;
       //s4
       //double s41 = 0;
     // ========================================================================== //
