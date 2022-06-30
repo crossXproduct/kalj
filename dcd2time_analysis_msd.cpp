@@ -70,9 +70,9 @@ int main() {
     time_t t1 = time(0);
     cout << "Initializing..." << endl;
 
-    int nfiles = 1, t0_sm = 0, tint_sm = 1, tint_lg = 1, ntints = 2, nt0s_max = 1, delta_t;
+    int nfiles = 1, t0_sm = 0, tint_sm = 1, tint_lg = 1, ntints = 2, nt0s_max = 1;
     float q = 1, a = 1, qmax = 1, rho = 1.2; // params of fs, fo
-    float tstep, dcdtimes; // tstep only used to fill args of dcd_info, dcdtimes is last time recorded in DCD files
+    float tstep, dcdtimes, delta_t; // tstep only used to fill args of dcd_info, dcdtimes is last time recorded in DCD files
     int cellsize, filesnapshots; // cell size for data reading, # of particle snapshots per file
     int N, dtsave, t0_dif = 1; // total # of particles, time between recorded steps, initial time difference
     char t0_choice_char;
