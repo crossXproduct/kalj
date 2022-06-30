@@ -4,7 +4,9 @@ import numpy as np
 import sys
 import matplotlib.pyplot as plt
 
-files = str(sys.argv[1])
+t_write = int(sys.argv[1])
+dt = float(sys.argv[2])
+files = list(sys.argv[3])
 msdfile = open('msd.dat','a')
 
 for file in files:
@@ -34,11 +36,11 @@ for file in files:
     traj.close()
 
     for i in range(0,len(msd.msd)):
-        msdfile.write("%4d,%7.5f\n"%(i*10,msd.msd[i]))
+        msdfile.write("%4d,%7.5f\n"%(i*t_write*dt,msd.msd[i]))
 
 msdfile.close()
 
-plt.plot(range(0,len(msd.msd)*10,10),msd.msd)
+plt.plot(np.linspace(0,len(msd.msd)*t_write*dt,len(msd.msd)),msd.msd)
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel('frames')
