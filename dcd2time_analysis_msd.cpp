@@ -109,7 +109,7 @@ int main() {
     string filenames_str[SIZE];
     char filename[SIZE];
     for(int i = 0; i < nfiles; i++) {
-        filenames_str[i] = path + "/traj" + to_string(i) + ".dcd";
+        filenames_str[i] = path + "/traj" + to_string(i+1) + ".dcd";
     }
 
 // ========================================================================== //
