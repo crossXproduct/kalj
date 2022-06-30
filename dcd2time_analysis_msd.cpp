@@ -70,7 +70,7 @@ int main() {
     time_t t1 = time(0);
     cout << "Initializing..." << endl;
 
-    int nfiles = 1, t0_sm = 0, tint_sm = 1, tint_lg = 1, ntints = 2, nt0s_max = 1;
+    int nfiles = 1, t0_sm = 0, tint_sm = 1, tint_lg = 1, ntints = 2, nt0s_max = 1, delta_t;
     float q = 1, a = 1, qmax = 1, rho = 1.2; // params of fs, fo
     float tstep, dcdtimes; // tstep only used to fill args of dcd_info, dcdtimes is last time recorded in DCD files
     int cellsize, filesnapshots; // cell size for data reading, # of particle snapshots per file
@@ -95,8 +95,8 @@ int main() {
         cin >> t0_dif;
     }
     cout << "Enter one at a time:" << endl;
-    cout << "'q' parameter | 'a' parameter | max q (s4)" << endl;
-    cin >> q >> a >> qmax;
+    cout << "'q' parameter | 'a' parameter | max q (s4) | dt" << endl;
+    cin >> q >> a >> qmax >> delta_t;
     double a2 = pow(a,2);
     cout << "Enter path to data directory (without ending /): " << endl;
     cin >> path;
@@ -522,7 +522,7 @@ int main() {
         fo.at(tindex) /= (normalization.at(tindex));
         //s4.at(tindex) /= (norm.at(tindex));
 
-        outfile << dt_snapshots.at(tindex)*dtsave << ",";
+        outfile << dt_snapshots.at(tindex)*dtsave*delta_t << ",";
         outfile << fixed << setprecision(8) << msd.at(tindex) << ",";
         outfile << fixed << setprecision(8) << fo.at(tindex) << ",";
         outfile << fixed << setprecision(8) << fs_x.at(tindex) << ",";
