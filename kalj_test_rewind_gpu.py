@@ -66,7 +66,7 @@ r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
 cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=50*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 snapshot = sim.state.get_snapshot()
@@ -116,7 +116,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=50*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
