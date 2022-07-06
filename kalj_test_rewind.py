@@ -5,6 +5,7 @@ import hoomd
 import gsd.hoomd
 import sys
 import random
+import timeit
 
 N_particles = int(sys.argv[1])
 temp = float(sys.argv[2])
@@ -14,6 +15,7 @@ t_run = int(sys.argv[5])
 t_write = int(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 #final_rho = float(sys.argv[3])
 random_seed = int(random.randrange(0,65535))
+time_conversion = 1.0/delta_t
 
 ###SYSTEM SETUP
 spacing = 1.3
@@ -60,7 +62,7 @@ r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
 cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=time_conversion*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 snapshot = sim.state.get_snapshot()
@@ -110,7 +112,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=time_conversion*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
@@ -150,7 +152,7 @@ print("V_therm=",thermodynamic_properties.volume**(1.0/3.0))
 print("V_box=",sim.state.box.volume**(1.0/3.0))
 
 ###EQUILIBRATION
-sim.run(100*t_eq)
+sim.run(time_conversion*t_eq)
 hoomd.write.GSD.write(state=sim.state, filename='equilibrated.gsd', mode='xb')
 #   Prints
 print("EQUILIBRATED")
@@ -185,7 +187,7 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=100*delta_t)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=time_conversion*delta_t)
 integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
@@ -198,8 +200,11 @@ thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd
 sim.operations.computes.append(thermodynamic_properties)
 
 ## Run
-sim.run(100*t_run)
+starttime = timeit.default_timer()
+sim.run(time_conversion*t_run)
+stoptime = timeit.default_timer()
 print("DONE")
+print("Runtime=",stoptime-starttime)
 print(sim.state.get_snapshot().particles.velocity[0:5])
 print("DOF=",thermodynamic_properties.degrees_of_freedom)
 print("Particles=",thermodynamic_properties.num_particles)
