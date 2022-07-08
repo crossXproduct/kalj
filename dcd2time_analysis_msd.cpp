@@ -60,7 +60,7 @@ long int dcd_info(char file[], int *N,int *nset, int *tbsave, float *tstep, int 
 // CM coordinate calculator function
 void sortqs(vector<double> &qx, vector<double> &qy, vector<double> &qz, vector<int> itable);
 float cm(float *x, int N);
-void printParams(string path, int nfiles, int tfirst, int tint_sm, int tint_lg, int dtsave, int ntints, char t0_choice, int t0_dif, float q, float a, double qmax);
+void printParams(string path, int nfiles, int tfirst, int tint_sm, int tint_lg, int dtsave, int ntints, char t0_choice, int t0_dif, float q, float a, double qmax, double dt);
 
 const int SIZE = 500;
 const complex<double> I = sqrt(-1);
@@ -327,7 +327,7 @@ int main() {
 //      Misc
 
     //save analysis params to file
-    printParams(path, nfiles, t0_snapshot_sm*dtsave*delta_t, dt_snapshot_sm*dtsave*delta_t, dt_snapshot_lg*dtsave*delta_t, dtsave*delta_t, ntints, t0_choice, t0_snapshot_dif*dtsave*delta_t, q, a, qmax);
+    printParams(path, nfiles, t0_snapshot_sm*dtsave*delta_t, dt_snapshot_sm*dtsave*delta_t, dt_snapshot_lg*dtsave*delta_t, dtsave*delta_t, ntints, t0_choice, t0_snapshot_dif*dtsave*delta_t, q, a, qmax, delta_t);
     //set up logistical parameters for main loops
     cout << "Reading data & evaluating functions..." << endl;
     int flag = 0; //dcd parameters found in Flenner's code (not used here)
@@ -572,7 +572,7 @@ float cm(float *x, int N) {
     return cm;
 }
 
-void printParams(string path, int nfiles, int tfirst, int tint_sm, int tint_lg, int dtsave, int ntints, char t0_choice, int t0_dif, float q, float a, double qmax) {
+void printParams(string path, int nfiles, int tfirst, int tint_sm, int tint_lg, int dtsave, int ntints, char t0_choice, int t0_dif, float q, float a, double qmax, double dt) {
 
     ofstream file;
     string file_path = __FILE__;
@@ -598,5 +598,6 @@ void printParams(string path, int nfiles, int tfirst, int tint_sm, int tint_lg, 
     file << "q = " << q << endl;
     file << "a = " << a;
     file << "qmax = " << qmax;
+    file << "dt = " << dt;
     file.close();
 }
