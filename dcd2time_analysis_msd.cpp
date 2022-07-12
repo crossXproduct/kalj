@@ -131,8 +131,8 @@ int main() {
 
 // ========================================================================== //
 //      Recast in units of dtsave (time between snapshots)
-    if(t0_choice == false) t0_dif = dtsave*delta_t;
     cout << "dtsave*delta_t=" << dtsave*delta_t;
+    if(t0_choice == false) t0_dif = dtsave*delta_t;
     else if(t0_dif < dtsave*delta_t){
         cout << "ERROR: initial time difference " << t0_dif << " too small. Must be at least " << dtsave*delta_t << endl;
         exit(0);
