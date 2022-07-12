@@ -12,7 +12,7 @@ temp = float(sys.argv[2])
 delta_t = float(sys.argv[3])
 t_eq = int(sys.argv[4])
 t_run = int(sys.argv[5])
-t_write = int(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
+t_write = float(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 #final_rho = float(sys.argv[3])
 random_seed = int(random.randrange(0,65535))
 time_conversion = int(1.0/delta_t)
@@ -193,7 +193,7 @@ sim.operations.integrator = integrator
 
 ## Setup writer
 #traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(t_write), unwrap_full=True)
-traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(time_conversion*t_write),unwrap_full=True)
+traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)),unwrap_full=True)
 sim.operations.writers.append(traj_writer)
 
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
