@@ -15,7 +15,7 @@ t_run = int(sys.argv[5])
 t_write = int(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 #final_rho = float(sys.argv[3])
 random_seed = int(random.randrange(0,65535))
-time_conversion = 1.0/delta_t
+time_conversion = int(1.0/delta_t)
 
 ###SYSTEM SETUP
 spacing = 1.3
