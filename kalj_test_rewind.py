@@ -193,7 +193,7 @@ sim.operations.integrator = integrator
 
 ## Setup writer
 #traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(t_write), unwrap_full=True)
-traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(time_conversion*t_write),unwrap_full=True)
+traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)),unwrap_full=True)
 sim.operations.writers.append(traj_writer)
 
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
