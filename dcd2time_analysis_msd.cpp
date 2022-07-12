@@ -132,16 +132,17 @@ int main() {
 // ========================================================================== //
 //      Recast in units of dtsave (time between snapshots)
     if(t0_choice == false) t0_dif = dtsave*delta_t;
+    cout << "dtsave*delta_t=" << dtsave*delta_t;
     else if(t0_dif < dtsave*delta_t){
         cout << "ERROR: initial time difference " << t0_dif << " too small. Must be at least " << dtsave*delta_t << endl;
         exit(0);
     }
-    int t0_snapshot_sm = t0_sm / dtsave / delta_t;
-    int dt_snapshot_sm = tint_sm / dtsave / delta_t;
-    int dt_snapshot_lg = tint_lg / dtsave / delta_t;
+    int t0_snapshot_sm = t0_sm / delta_t / dtsave;
+    int dt_snapshot_sm = tint_sm / delta_t / dtsave;
+    int dt_snapshot_lg = tint_lg / delta_t/ dtsave ;
     cout << "dt_snapshot_lg = " << dt_snapshot_lg << endl;
     if(dt_snapshot_lg > dcdtimes) dt_snapshot_lg = dcdtimes;
-    int t0_snapshot_dif = t0_dif / dtsave / delta_t;
+    int t0_snapshot_dif = t0_dif / delta_t / dtsave;
     //remainder of code is written in terms of snapshots
 
 // ========================================================================== //
