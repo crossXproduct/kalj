@@ -17,6 +17,7 @@ t_write = float(sys.argv[6]) #THIS NEEDS TO STAY THE SAME FOR ALL RUNS
 random_seed = int(random.randrange(0,65535))
 time_conversion = 1.0/delta_t
 
+time1 = timeit.default_timer()
 ###SYSTEM SETUP
 spacing = 1.3
 K = math.ceil(N_particles**(1 / 3))
@@ -35,9 +36,14 @@ snapshot.particles.mass[1:int(0.5*N_particles)] = 2
 
 with gsd.hoomd.open(name='lattice.gsd', mode='xb') as f:
     f.append(snapshot)
+time2 = timeit.default_timer()
+print("Setup complete.")
+print("Setup time=",time2-time1)
 
 ###RANDOMIZE
 ## Initialize state
+print("Randomizing...")
+time3 = timeit.default_timer()
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
@@ -74,23 +80,27 @@ sim.state.thermalize_particle_momenta(filter=hoomd.filter.All(), kT=temp)
 #   Prints
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
 sim.operations.computes.append(thermodynamic_properties)
-sim.run(0)
-#print("RANDOMIZED")
-print(sim.state.get_snapshot().particles.velocity[0:5])
-print("DOF=",thermodynamic_properties.degrees_of_freedom)
-print("Particles=",thermodynamic_properties.num_particles)
-print("KE=",thermodynamic_properties.kinetic_energy)
-print("kT=",thermodynamic_properties.kinetic_temperature)
-print("V=",thermodynamic_properties.volume**(1.0/3.0))
 
 ## Randomize positions
 sim.run(100000)
 
 ## Write randomized state to file
 hoomd.write.GSD.write(state=sim.state, filename='random.gsd', mode='xb')
+time4 = timeit.default_timer()
+print("RANDOMIZED")
+print("Randomization time=",time4-time3)
+print("Velocities:\n",sim.state.get_snapshot().particles.velocity[0:5])
+print("Thermodynamic properties of snapshot:")
+print("DOF=",thermodynamic_properties.degrees_of_freedom)
+print("Particles=",thermodynamic_properties.num_particles)
+print("KE=",thermodynamic_properties.kinetic_energy)
+print("kT=",thermodynamic_properties.kinetic_temperature)
+print("V=",thermodynamic_properties.volume**(1.0/3.0))
 
 ###COMPRESS
 ## Initialize state
+print("Compressing...")
+time5 = timeit.default_timer()
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
@@ -140,12 +150,15 @@ sim.operations.updaters.append(box_resize)
 
 ## Run compressor
 sim.run(t_r)
+time6 = timeit.default_timer()
 print("COMPRESSED")
-print("Compression successful?",sim.state.box == final_box) #check compression success
-print(initial_box)
-print(final_box)
-print(sim.state.box)
+print("Compression time=",time6-time5)
+print("Compression successful?",abs(sim.state.box.volume - final_box.volume)/final_box.volume >= 0.01) #check compression success
+print("Initial:\n",initial_box)
+print("Final:\n",final_box)
+print("Goal:\n",sim.state.box)
 #sim.operations.updaters.remove(box_resize) #remove compressor, don't need it anymore
+print("Thermodynamic properties of snapshot:")
 print("DOF=",thermodynamic_properties.degrees_of_freedom)
 print("Particles=",thermodynamic_properties.num_particles)
 print("KE=",thermodynamic_properties.kinetic_energy)
@@ -154,11 +167,13 @@ print("V_therm=",thermodynamic_properties.volume**(1.0/3.0))
 print("V_box=",sim.state.box.volume**(1.0/3.0))
 
 ###EQUILIBRATION
+print("Equilibrating...")
 sim.run(time_conversion*t_eq)
 hoomd.write.GSD.write(state=sim.state, filename='equilibrated.gsd', mode='xb')
 #   Prints
 print("EQUILIBRATED")
 print(sim.state.get_snapshot().particles.velocity[0:5])
+print("Thermodynamic properties of snapshot:")
 print("DOF=",thermodynamic_properties.degrees_of_freedom)
 print("Particles=",thermodynamic_properties.num_particles)
 print("KE=",thermodynamic_properties.kinetic_energy)
@@ -166,6 +181,8 @@ print("kT=",thermodynamic_properties.kinetic_temperature)
 print("V=",thermodynamic_properties.volume**(1.0/3.0))
 
 ###PRODUCTION
+print("Production running...")
+starttime = timeit.default_timer()
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='equilibrated.gsd')
@@ -202,11 +219,11 @@ thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd
 sim.operations.computes.append(thermodynamic_properties)
 
 ## Run
-starttime = timeit.default_timer()
 sim.run(time_conversion*t_run)
 stoptime = timeit.default_timer()
 print("DONE")
-print("Runtime=",stoptime-starttime)
+print("Production time=",stoptime-starttime)
+print("Thermodynamic properties of snapshot:")
 print(sim.state.get_snapshot().particles.velocity[0:5])
 print("DOF=",thermodynamic_properties.degrees_of_freedom)
 print("Particles=",thermodynamic_properties.num_particles)
