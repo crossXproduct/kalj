@@ -182,7 +182,6 @@ print("V=",thermodynamic_properties.volume**(1.0/3.0))
 
 ###PRODUCTION
 print("Production running...")
-starttime = timeit.default_timer()
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='equilibrated.gsd')
@@ -210,15 +209,20 @@ nve = hoomd.md.methods.NVE(filter=hoomd.filter.All())
 integrator.methods.append(nve)
 sim.operations.integrator = integrator
 
-## Setup writer
-#traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(t_write), unwrap_full=True)
+## Setup logger and writers
+thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
+sim.operations.computes.append(thermodynamic_properties)
+logger = hoomd.logging.Logger()
+logger.add(thermodynamic_properties,quantities=['kinetic_energy','kinetic_temperature'])
+log_writer = hoomd.write.GSD(filename='log.gsd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)),unwrap_full=True)
+log_writer.log = logger
+sim.operations.writers.append(log_writer)
+
 traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)),unwrap_full=True)
 sim.operations.writers.append(traj_writer)
 
-thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
-sim.operations.computes.append(thermodynamic_properties)
-
 ## Run
+starttime = timeit.default_timer()
 sim.run(time_conversion*t_run)
 stoptime = timeit.default_timer()
 print("DONE")
