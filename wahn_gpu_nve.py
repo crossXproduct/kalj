@@ -49,7 +49,7 @@ sim.create_state_from_gsd(filename='lattice.gsd')
 ## Setup LJ Integrator
 integrator = hoomd.md.Integrator(dt=0.005)
 cell = hoomd.md.nlist.Cell(buffer=0.1)
-lj = hoomd.md.pair.LJ(nlist=cell)
+lj = hoomd.md.pair.LJ(nlist=cell,mode='shift')
 #   Define pair potential
 epsilon_AA = 1.0
 sigma_AA = 1.0
@@ -105,7 +105,7 @@ sim.create_state_from_gsd(filename='lattice.gsd')
 ## Setup LJ Integrator
 integrator = hoomd.md.Integrator(dt=0.005)
 cell = hoomd.md.nlist.Cell(buffer=r_buf)
-lj = hoomd.md.pair.LJ(nlist=cell)
+lj = hoomd.md.pair.LJ(nlist=cell,mode='shift')
 #   Define pair potential
 epsilon_AA = 1.0
 sigma_AA = 1.0
@@ -190,7 +190,7 @@ sim.create_state_from_gsd(filename='equilibrated.gsd')
 ## Setup LJ Integrator
 integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=r_buf)
-lj = hoomd.md.pair.LJ(nlist=cell)
+lj = hoomd.md.pair.LJ(nlist=cell,mode='shift')
 #   Define pair potential
 epsilon_AA = 1.0
 sigma_AA = 1.0
@@ -215,7 +215,7 @@ thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd
 sim.operations.computes.append(thermodynamic_properties)
 logger = hoomd.logging.Logger()
 logger.add(thermodynamic_properties,quantities=['kinetic_energy','kinetic_temperature'])
-log_writer = hoomd.write.GSD(filename='log.gsd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)),unwrap_full=True)
+log_writer = hoomd.write.GSD(filename='log.gsd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)))
 log_writer.log = logger
 sim.operations.writers.append(log_writer)
 
