@@ -28,11 +28,10 @@ position = list(itertools.product(x, repeat=3))
 snapshot = gsd.hoomd.Snapshot()
 snapshot.particles.N = N_particles
 snapshot.particles.position = position[0:N_particles]
-snapshot.particles.typeid = [0] * int(0.5*N_particles) + [1] * int(0.5*N_particles) #particle 'B' is 20%
+snapshot.particles.typeid = [0] * int(0.5*N_particles) + [1] * int(0.5*N_particles)
+snapshot.particles.mass = [1.0] * int(0.5*N_particles) + [2.0] * int(0.5*N_particles)
 snapshot.configuration.box = [L, L, L, 0, 0, 0]
 snapshot.particles.types = ['A','B']
-snapshot.particles.mass[0:int(0.5*N_particles)] = 1
-snapshot.particles.mass[1:int(0.5*N_particles)] = 2
 
 with gsd.hoomd.open(name='lattice.gsd', mode='xb') as f:
     f.append(snapshot)
