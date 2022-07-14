@@ -43,7 +43,6 @@ print("Setup time=",time2-time1)
 ###RANDOMIZE
 ## Initialize state
 print("Randomizing...")
-time3 = timeit.default_timer()
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
@@ -82,11 +81,11 @@ thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd
 sim.operations.computes.append(thermodynamic_properties)
 
 ## Randomize positions
+time3 = timeit.default_timer()
 sim.run(100000)
-
+time4 = timeit.default_timer()
 ## Write randomized state to file
 hoomd.write.GSD.write(state=sim.state, filename='random.gsd', mode='xb')
-time4 = timeit.default_timer()
 print("RANDOMIZED")
 print("Randomization time=",time4-time3)
 print("Velocities:\n",sim.state.get_snapshot().particles.velocity[0:5])
@@ -100,7 +99,6 @@ print("V=",thermodynamic_properties.volume**(1.0/3.0))
 ###COMPRESS
 ## Initialize state
 print("Compressing...")
-time5 = timeit.default_timer()
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
@@ -149,6 +147,7 @@ box_resize = hoomd.update.BoxResize(box1=initial_box, box2=final_box, variant=ra
 sim.operations.updaters.append(box_resize)
 
 ## Run compressor
+time5 = timeit.default_timer()
 sim.run(t_r)
 time6 = timeit.default_timer()
 print("COMPRESSED")
@@ -168,10 +167,13 @@ print("V_box=",sim.state.box.volume**(1.0/3.0))
 
 ###EQUILIBRATION
 print("Equilibrating...")
+time7 = timeit.default_timer()
 sim.run(time_conversion*t_eq)
+time8 = timeit.default_timer()
 hoomd.write.GSD.write(state=sim.state, filename='equilibrated.gsd', mode='xb')
 #   Prints
 print("EQUILIBRATED")
+print("Equilibration time=",time8-time7)
 print(sim.state.get_snapshot().particles.velocity[0:5])
 print("Thermodynamic properties of snapshot:")
 print("DOF=",thermodynamic_properties.degrees_of_freedom)
