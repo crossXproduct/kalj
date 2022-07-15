@@ -47,7 +47,7 @@ sim = hoomd.Simulation(device=gpu, seed=random_seed)
 sim.create_state_from_gsd(filename='lattice.gsd')
 
 ## Setup LJ Integrator
-integrator = hoomd.md.Integrator(dt=0.005)
+integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=0.1)
 lj = hoomd.md.pair.LJ(nlist=cell,mode='shift')
 #   Define pair potential
@@ -100,10 +100,10 @@ print("V=",thermodynamic_properties.volume**(1.0/3.0))
 print("Compressing...")
 gpu = hoomd.device.GPU()
 sim = hoomd.Simulation(device=gpu, seed=random_seed)
-sim.create_state_from_gsd(filename='lattice.gsd')
+sim.create_state_from_gsd(filename='random.gsd')
 
 ## Setup LJ Integrator
-integrator = hoomd.md.Integrator(dt=0.005)
+integrator = hoomd.md.Integrator(dt=delta_t)
 cell = hoomd.md.nlist.Cell(buffer=r_buf)
 lj = hoomd.md.pair.LJ(nlist=cell,mode='shift')
 #   Define pair potential
@@ -217,13 +217,13 @@ integrator.methods.append(nve)
 sim.operations.integrator = integrator
 
 ## Setup logger and writers
-thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
-sim.operations.computes.append(thermodynamic_properties)
-logger = hoomd.logging.Logger()
-logger.add(thermodynamic_properties,quantities=['kinetic_energy','kinetic_temperature'])
-log_writer = hoomd.write.GSD(filename='log.gsd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)))
-log_writer.log = logger
-sim.operations.writers.append(log_writer)
+#thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
+#sim.operations.computes.append(thermodynamic_properties)
+#logger = hoomd.logging.Logger()
+#logger.add(thermodynamic_properties,quantities=['kinetic_energy','kinetic_temperature'])
+#log_writer = hoomd.write.GSD(filename='log.gsd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)))
+#log_writer.log = logger
+#sim.operations.writers.append(log_writer)
 
 traj_writer = hoomd.write.DCD(filename='trajectory.dcd', trigger=hoomd.trigger.Periodic(int(time_conversion*t_write)),unwrap_full=True)
 sim.operations.writers.append(traj_writer)
