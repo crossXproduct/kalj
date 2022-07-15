@@ -215,8 +215,8 @@ lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
-nve = hoomd.md.methods.NVE(filter=hoomd.filter.All())
-integrator.methods.append(nve)
+nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=time_conversion*delta_t)
+integrator.methods.append(nvt)
 sim.operations.integrator = integrator
 
 thermodynamic_properties = hoomd.md.compute.ThermodynamicQuantities(filter=hoomd.filter.All())
