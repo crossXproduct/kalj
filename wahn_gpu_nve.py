@@ -111,14 +111,17 @@ epsilon_AA = 1.0
 sigma_AA = 1.0
 lj.params[('A', 'A')] = dict(epsilon=epsilon_AA, sigma=sigma_AA)
 lj.r_cut[('A', 'A')] = 2.5*sigma_AA
-epsilon_AB = 1.5
-sigma_AB = 0.8
+print("r_cut_AA=",lj.r_cut[('A', 'A')])
+epsilon_AB = 1.0
+sigma_AB = 1.1
 lj.params[('A', 'B')] = dict(epsilon=epsilon_AB, sigma=sigma_AB)
 lj.r_cut[('A', 'B')] = 2.5*sigma_AB
-epsilon_BB = 0.5
-sigma_BB = 0.88
+epsilon_BB = 1.0
+sigma_BB = 1.2
 lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
+r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
+cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
 nvt = hoomd.md.methods.NVT(kT=temp, filter=hoomd.filter.All(), tau=time_conversion*delta_t)
@@ -196,14 +199,17 @@ epsilon_AA = 1.0
 sigma_AA = 1.0
 lj.params[('A', 'A')] = dict(epsilon=epsilon_AA, sigma=sigma_AA)
 lj.r_cut[('A', 'A')] = 2.5*sigma_AA
-epsilon_AB = 1.5
-sigma_AB = 0.8
+print("r_cut_AA=",lj.r_cut[('A', 'A')])
+epsilon_AB = 1.0
+sigma_AB = 1.1
 lj.params[('A', 'B')] = dict(epsilon=epsilon_AB, sigma=sigma_AB)
 lj.r_cut[('A', 'B')] = 2.5*sigma_AB
-epsilon_BB = 0.5
-sigma_BB = 0.88
+epsilon_BB = 1.0
+sigma_BB = 1.2
 lj.params[('B', 'B')] = dict(epsilon=epsilon_BB, sigma=epsilon_BB)
 lj.r_cut[('B', 'B')] = 2.5*sigma_BB
+r_buf = 0.3*max(lj.r_cut[('A', 'A')],lj.r_cut[('A', 'B')],lj.r_cut[('B', 'B')])
+cell.buffer = r_buf
 #   Assign force to integrator and integrator to simulation
 integrator.forces.append(lj)
 nve = hoomd.md.methods.NVE(filter=hoomd.filter.All())
