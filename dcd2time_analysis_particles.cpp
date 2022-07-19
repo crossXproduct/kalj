@@ -256,7 +256,7 @@ int main() {
     cout << "Initializing arrays..." << endl;
     //positions
     float *x0, *y0, *z0, *xf, *yf, *zf;
-    int size_xyz = N_used*sizeof(float);
+    int size_xyz = N*sizeof(float);
     x0 = (float *) malloc(size_xyz);
 	y0 = (float *) malloc(size_xyz);
 	z0 = (float *) malloc(size_xyz);
