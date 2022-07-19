@@ -130,6 +130,7 @@ int main() {
         dcdtimes += currsnapshots;
     }
     memset(&filename, 0, sizeof(filesnapshots));
+    cout << "N=" << N << endl;
 
 // ========================================================================== //
 //      Recast in units of dtsave (time between snapshots)
